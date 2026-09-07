@@ -1,5 +1,10 @@
 ## Changelog
 
+## Unreleased
+
+- Add `unicode_email` and `url` features (both on by default) so the `idna` dependency and its ICU
+  tables can be dropped with `default-features = false`
+
 ## 0.21.0 (2026/07/09)
 
 - Replace dep proc-macro-error2 with proc-macro-error3
