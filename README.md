@@ -160,9 +160,14 @@ Tests whether the String is a valid email according to the HTML5 regex, which me
 some esoteric emails as invalid that won't be valid in a `email` input as well.
 This validator doesn't take any arguments: `#[validate(email)]`.
 
+Internationalized domain names (eg `test@उदाहरण.परीक्षा`) require the `unicode_email` feature,
+which is enabled by default. Without it, such addresses are rejected.
+
 ### url
 Tests whether the String is a valid URL.
 This validator doesn't take any arguments: `#[validate(url)]`;
+
+Requires the `url` feature, which is enabled by default.
 
 ### length
 Tests whether a String or a Vec match the length requirement given. `length` has 3 integer arguments:
@@ -404,3 +409,6 @@ For example, the following attributes all work:
 ## Features
 `derive` - This allows for the use of the derive macro.
 `derive_nightly_features` - This imports both derive as well as proc-macro-error2 nightly features. This allows proc-macro-error2 to emit extra nightly warnings.
+`card` - Enables the `credit_card` validator.
+`unicode_email` (default) - Pulls in `idna` so email validation accepts internationalized domain names.
+`url` (default) - Enables the `url` validator, pulling in the `url` crate.
