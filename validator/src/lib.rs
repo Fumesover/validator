@@ -37,8 +37,8 @@
 //! # Available Validations:
 //! | Validation              | Notes                                                 |
 //! | ----------------------- | ----------------------------------------------------- |
-//! | `email`                 |                                                       |
-//! | `url`                   |                                                       |
+//! | `email`                 | (IDN domains require the feature `unicode_email`)     |
+//! | `url`                   | (Requires the feature `url` to be enabled)            |
 //! | `length`                |                                                       |
 //! | `range`                 |                                                       |
 //! | `must_match`            |                                                       |
@@ -77,6 +77,7 @@ pub use validation::non_control_character::ValidateNonControlCharacter;
 pub use validation::range::ValidateRange;
 pub use validation::regex::{AsRegex, ValidateRegex};
 pub use validation::required::ValidateRequired;
+#[cfg(feature = "url")]
 pub use validation::urls::ValidateUrl;
 
 pub use traits::{Validate, ValidateArgs};

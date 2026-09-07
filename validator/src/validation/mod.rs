@@ -11,4 +11,5 @@ pub mod non_control_character;
 pub mod range;
 pub mod regex;
 pub mod required;
+#[cfg(feature = "url")]
 pub mod urls;

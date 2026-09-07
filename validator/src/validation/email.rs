@@ -1,4 +1,3 @@
-use idna::domain_to_ascii;
 use regex::Regex;
 use std::{borrow::Cow, sync::LazyLock};
 
@@ -35,6 +34,24 @@ fn validate_domain_part(domain_part: &str) -> bool {
     }
 }
 
+/// Punycodes an [IDN](https://en.wikipedia.org/wiki/Internationalized_domain_name) domain
+/// and checks whether the result is a valid domain.
+#[must_use]
+#[cfg(feature = "unicode_email")]
+fn validate_idn_domain_part(domain_part: &str) -> bool {
+    match idna::domain_to_ascii(domain_part) {
+        Ok(d) => validate_domain_part(&d),
+        Err(_) => false,
+    }
+}
+
+/// IDN domains are only supported with the `unicode_email` feature enabled.
+#[must_use]
+#[cfg(not(feature = "unicode_email"))]
+fn validate_idn_domain_part(_domain_part: &str) -> bool {
+    false
+}
+
 /// Validates whether the given string is an email based on the [HTML5 spec](https://html.spec.whatwg.org/multipage/forms.html#valid-e-mail-address).
 /// [RFC 5322](https://tools.ietf.org/html/rfc5322) is not practical in most circumstances and allows email addresses
 /// that are unfamiliar to most users.
@@ -67,11 +84,8 @@ pub trait ValidateEmail {
         }
 
         if !validate_domain_part(domain_part) {
-            // Still the possibility of an [IDN](https://en.wikipedia.org/wiki/Internationalized_domain_name)
-            return match domain_to_ascii(domain_part) {
-                Ok(d) => validate_domain_part(&d),
-                Err(_) => false,
-            };
+            // Still the possibility of an IDN
+            return validate_idn_domain_part(domain_part);
         }
 
         true
@@ -140,7 +154,6 @@ mod tests {
             ("email@[::fffF:127.0.0.1]", true),
             ("example@valid-----hyphens.com", true),
             ("example@valid-with-hyphens.com", true),
-            ("test@domain.with.idn.tld.उदाहरण.परीक्षा", true),
             (r#""test@test"@example.com"#, false),
             // max length for domain name labels is 63 characters per RFC 1034
             ("a@atm.aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", true),
@@ -189,6 +202,15 @@ mod tests {
                 "Email `{input}` was not classified correctly"
             );
         }
+    }
+
+    #[test]
+    fn test_validate_email_idn() {
+        // IDN domains are only recognised when `idna` is available
+        assert_eq!(
+            "test@domain.with.idn.tld.उदाहरण.परीक्षा".validate_email(),
+            cfg!(feature = "unicode_email")
+        );
     }
 
     #[test]
