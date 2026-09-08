@@ -160,6 +160,8 @@ Tests whether the String is a valid email according to the HTML5 regex, which me
 some esoteric emails as invalid that won't be valid in a `email` input as well.
 This validator doesn't take any arguments: `#[validate(email)]`.
 
+Requires the `email` feature, which is enabled by default and pulls in the `regex` crate.
+
 Internationalized domain names (eg `test@उदाहरण.परीक्षा`) require the `unicode_email` feature,
 which is enabled by default. Without it, such addresses are rejected.
 
@@ -252,6 +254,8 @@ Examples:
 ### regex
 Tests whether the string matches the regex given. `regex` takes
 1 string argument: the path to a static Regex instance.
+
+Requires the `regex` feature, which is enabled by default.
 
 Examples:
 
@@ -410,5 +414,7 @@ For example, the following attributes all work:
 `derive` - This allows for the use of the derive macro.
 `derive_nightly_features` - This imports both derive as well as proc-macro-error2 nightly features. This allows proc-macro-error2 to emit extra nightly warnings.
 `card` - Enables the `credit_card` validator.
-`unicode_email` (default) - Pulls in `idna` so email validation accepts internationalized domain names.
+`email` (default) - Enables the `email` validator, pulling in the `regex` crate.
+`regex` (default) - Enables the `regex` validator, pulling in the `regex` crate.
+`unicode_email` (default) - Pulls in `idna` so email validation accepts internationalized domain names. Implies `email`.
 `url` (default) - Enables the `url` validator, pulling in the `url` crate.
