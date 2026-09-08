@@ -37,7 +37,7 @@
 //! # Available Validations:
 //! | Validation              | Notes                                                 |
 //! | ----------------------- | ----------------------------------------------------- |
-//! | `email`                 | (IDN domains require the feature `unicode_email`)     |
+//! | `email`                 | (Requires the feature `email`; IDN domains also need `unicode_email`) |
 //! | `url`                   | (Requires the feature `url` to be enabled)            |
 //! | `length`                |                                                       |
 //! | `range`                 |                                                       |
@@ -45,7 +45,7 @@
 //! | `contains`              |                                                       |
 //! | `does_not_contain`      |                                                       |
 //! | `custom`                |                                                       |
-//! | `regex`                 |                                                       |
+//! | `regex`                 | (Requires the feature `regex` to be enabled)          |
 //! | `credit_card`           | (Requires the feature `card` to be enabled)           |
 //! | `non_control_character` |                                                       |
 //! | `required`              |                                                       |
@@ -69,12 +69,14 @@ mod validation;
 pub use validation::cards::ValidateCreditCard;
 pub use validation::contains::ValidateContains;
 pub use validation::does_not_contain::ValidateDoesNotContain;
+#[cfg(feature = "email")]
 pub use validation::email::ValidateEmail;
 pub use validation::ip::ValidateIp;
 pub use validation::length::ValidateLength;
 pub use validation::must_match::validate_must_match;
 pub use validation::non_control_character::ValidateNonControlCharacter;
 pub use validation::range::ValidateRange;
+#[cfg(feature = "regex")]
 pub use validation::regex::{AsRegex, ValidateRegex};
 pub use validation::required::ValidateRequired;
 #[cfg(feature = "url")]
